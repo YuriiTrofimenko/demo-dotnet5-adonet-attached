@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using NickBuhro.Translit;
 
@@ -9,8 +10,8 @@ namespace first
         static void Main(string[] args)
         {
             using (SqlConnection connection =
-                new SqlConnection(@"Data Source=localhost,1433\sql1;Initial Catalog=demo2021;User ID=sa;Password=Passw0rd%"))
-                // new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=demo2021;Integrated Security=True"))
+                //new SqlConnection(@"Data Source=localhost,1433\sql1;Initial Catalog=demo2021;User ID=sa;Password=Passw0rd%"))
+                new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=demo2021;Integrated Security=True"))
             {
                 connection.Open();
 
@@ -22,8 +23,17 @@ namespace first
                 if (roleCount == null || (int)roleCount == 0)
                 {
                     SqlCommand initInsertRole = connection.CreateCommand();
+                    List<SqlParameter> parameters = new List<SqlParameter>
+                    {
+                        new SqlParameter("@User","User"),
+                        new SqlParameter("@Admin","Admin"),
+                    };
+                    var l = new SqlParameter("@Manager", System.Data.SqlDbType.NVarChar);
+                    l.Value = "Менеджер";
+                    parameters.Add(l);
                     initInsertRole.CommandText =
-                        "INSERT INTO [dbo].[Roles] ([name]) VALUES ('User'), ('Admin'), (N'Контент менеджер');";
+                        "INSERT INTO [dbo].[Roles] ([name]) VALUES (@User), (@Admin), (@Manager);";
+                    initInsertRole.Parameters.AddRange(parameters.ToArray());
                     int insertedRoleCount = initInsertRole.ExecuteNonQuery();
                     Console.WriteLine($"Total inserted row count: {insertedRoleCount}");
                 }
