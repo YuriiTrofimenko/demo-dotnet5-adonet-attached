@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using NickBuhro.Translit;
-
+using System.Configuration;
 namespace first
 {
     class Program
     {
         static void Main(string[] args)
         {
+            string connectionString =
+              ConfigurationManager.ConnectionStrings["MyConnString"].ConnectionString;
             using (SqlConnection connection =
                 //new SqlConnection(@"Data Source=localhost,1433\sql1;Initial Catalog=demo2021;User ID=sa;Password=Passw0rd%"))
-                new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=demo2021;Integrated Security=True"))
+                //new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=demo2021;Integrated Security=True"))
+                new SqlConnection(connectionString))
             {
                 connection.Open();
 
